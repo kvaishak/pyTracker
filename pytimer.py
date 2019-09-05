@@ -16,8 +16,12 @@ def get_active_window():
     _active_window_name = (NSWorkspace.sharedWorkspace().activeApplication()['NSApplicationName'])
     return _active_window_name
 
-def get_chrome_url():
-    textOfMyScript = """tell app "google chrome" to get the url of the active tab of window 1"""
+def get_url(browser):
+    if(browser == "chrome"):
+        textOfMyScript = """tell application "Google Chrome" to return URL of active tab of front window"""
+    elif(browser == "safari"):
+        textOfMyScript = """tell application "Safari" to return URL of front document"""
+
     s = NSAppleScript.initWithSource_(
         NSAppleScript.alloc(), textOfMyScript)
     results, err = s.executeAndReturnError_(None)
@@ -30,7 +34,9 @@ try:
         new_window_name = get_active_window()
         # for getting the chrome Url
         if 'Google Chrome' in new_window_name:
-                new_window_name = url_to_name(get_chrome_url())
+            new_window_name = url_to_name(get_url("chrome"))
+        elif 'Safari' in new_window_name:
+            new_window_name = url_to_name(get_url("safari"))
 
         if active_window_name != new_window_name:
             print(active_window_name)
