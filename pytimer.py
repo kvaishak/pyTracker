@@ -17,6 +17,7 @@ def get_active_window():
     return _active_window_name
 
 def get_url(browser):
+    # Refer - > https://gist.github.com/dongyuwei/a1c9d67e4af6bbbd999c
     if(browser == "chrome"):
         textOfMyScript = """tell application "Google Chrome" to return URL of active tab of front window"""
     elif(browser == "safari"):
