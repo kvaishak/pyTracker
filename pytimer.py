@@ -2,11 +2,14 @@ import time
 import datetime
 from AppKit import NSWorkspace
 from Foundation import *
+from activity import *
 
 active_window_name = ""
 activity_name = ""
 first_time = True
 start_time = datetime.datetime.now()
+activeList = AcitivyList([])
+first_time = True
 
 def url_to_name(url):
     string_list = url.split('/')
@@ -29,6 +32,11 @@ def get_url(browser):
     return results.stringValue()
 
 try:
+    activeList.initialize_me()
+except Exception:
+    print('No json')
+
+try:
     while True:
         previous_site = ""
         
@@ -43,20 +51,31 @@ try:
             print(active_window_name)
             activity_name = active_window_name
 
-            
-            end_time = datetime.datetime.now()
-            time_taken = end_time - start_time
-            # print(time_taken)
-            days, seconds = time_taken.days, time_taken.seconds
-            hours = days * 24 + seconds // 3600
-            minutes = (seconds % 3600) // 60
-            seconds = seconds % 60
-            print("The time taken by the above activity in days = {days} - hours =  {hours} -  minutes  = {minutes} - Seconds = {seconds}".format(days = days, hours = hours, minutes = minutes, seconds = seconds))
-            print("--------------------------------------------------------------")
-            start_time = datetime.datetime.now()
+            if not first_time:
+                end_time = datetime.datetime.now()
+                time_entry = TimeEntry(start_time, end_time, 0, 0, 0, 0)
+                time_entry._get_specific_times()
+
+                exists = False
+                for activity in activeList.activities:
+                    if activity.name == activity_name:
+                        exists = True
+                        activity.time_entries.append(time_entry)
+
+                if not exists:
+                    activity = Activity(activity_name, [time_entry])
+                    activeList.activities.append(activity)
+                with open('activities.json', 'w') as json_file:
+                    json.dump(activeList.serialize(), json_file,
+                              indent=4, sort_keys=True)
+                    start_time = datetime.datetime.now()
+            first_time = False
             active_window_name = new_window_name
+
 
         time.sleep(1)
 
 except KeyboardInterrupt:
     print("Stopped the Tracker")
+    with open('activities.json', 'w') as json_file:
+        json.dump(activeList.serialize(), json_file, indent=4, sort_keys=True)
