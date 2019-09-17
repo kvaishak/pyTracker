@@ -1,8 +1,17 @@
 import time
 import datetime
-from AppKit import NSWorkspace
-from Foundation import *
+from os import system
 from activity import *
+import json
+import sys
+if sys.platform in ['Windows', 'win32', 'cygwin']:
+    import win32gui
+    import uiautomation as auto
+elif sys.platform in ['Mac', 'darwin', 'os2', 'os2emx']:
+    from AppKit import NSWorkspace
+    from Foundation import *
+elif sys.platform in ['linux', 'linux2']:
+        import linux as l
 
 active_window_name = ""
 activity_name = ""
@@ -16,20 +25,42 @@ def url_to_name(url):
     return string_list[2]
 
 def get_active_window():    
-    _active_window_name = (NSWorkspace.sharedWorkspace().activeApplication()['NSApplicationName'])
+    _active_window_name = None
+    if sys.platform in ['Windows', 'win32', 'cygwin']:
+        window = win32gui.GetForegroundWindow()
+        _active_window_name = win32gui.GetWindowText(window)
+    elif sys.platform in ['Mac', 'darwin', 'os2', 'os2emx']:
+        _active_window_name = (NSWorkspace.sharedWorkspace()
+                               .activeApplication()['NSApplicationName'])
+    else:
+        print("sys.platform={platform} is not supported."
+              .format(platform=sys.platform))
+        print(sys.version)
     return _active_window_name
 
 def get_url(browser):
     # Refer - > https://gist.github.com/dongyuwei/a1c9d67e4af6bbbd999c
-    if(browser == "chrome"):
-        textOfMyScript = """tell application "Google Chrome" to return URL of active tab of front window"""
-    elif(browser == "safari"):
-        textOfMyScript = """tell application "Safari" to return URL of front document"""
+    if sys.platform in ['Windows', 'win32', 'cygwin']:
+        window = win32gui.GetForegroundWindow()
+        chromeControl = auto.ControlFromHandle(window)
+        edit = chromeControl.EditControl()
+        return 'https://' + edit.GetValuePattern().Value
+    elif sys.platform in ['Mac', 'darwin', 'os2', 'os2emx']:
+        if(browser == "chrome"):
+            textOfMyScript = """tell application "Google Chrome" to return URL of active tab of front window"""
+        elif(browser == "safari"):
+            textOfMyScript = """tell application "Safari" to return URL of front document"""
 
-    s = NSAppleScript.initWithSource_(
-        NSAppleScript.alloc(), textOfMyScript)
-    results, err = s.executeAndReturnError_(None)
-    return results.stringValue()
+        s = NSAppleScript.initWithSource_(
+            NSAppleScript.alloc(), textOfMyScript)
+        results, err = s.executeAndReturnError_(None)
+        return results.stringValue()
+    else:
+        print("sys.platform={platform} is not supported."
+              .format(platform=sys.platform))
+        print(sys.version)
+    return _active_window_name
+
 
 try:
     activeList.initialize_me()
