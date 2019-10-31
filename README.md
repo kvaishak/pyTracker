@@ -7,7 +7,7 @@ A simple python application to track the time and usage of application in your s
 
 To use this project it’s pretty much straight forward with the only requisite being a working python library preferable python3 on your system. 
 
-### Installing
+### Installing and Usage
 
 - Clone the project to your location of choice.
 - Navigate into the project to the location of `pytimer.py` and run the file using python.
