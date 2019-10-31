@@ -12,7 +12,9 @@ To use this project it’s pretty much straight forward with the only requisite 
 - Clone the project to your location of choice.
 - Navigate into the project to the location of `pytimer.py` and run the file using python.
 
-    `python pytimer.py`
+    ```
+    python pytimer.py
+    ```
 
 - The program will start executing with the terminal showing what application has been used previously with timer having started for the application you are currently on.
 - All the data about the applications being tracked will be saved in JSON format in `activities.json`.
