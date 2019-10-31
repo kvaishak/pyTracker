@@ -22,4 +22,4 @@ To use this project it’s pretty much straight forward with the only requisite 
 
 ### Languages used
 
-Python
+- Python
