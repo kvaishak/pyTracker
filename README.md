@@ -1,13 +1,9 @@
 
 ## PyTracker
 
----
-
 A simple python application to track the time and usage of application in your system Mac or PC. 
 
 ## Getting Started
-
----
 
 To use this project it’s pretty much straight forward with the only requisite being having a working python library preferable python3 on your system. 
 
@@ -23,7 +19,5 @@ To use this project it’s pretty much straight forward with the only requisite 
 - In case of websites visited in Chrome or Safari, the individual websites are tracked as independent application.
 
 ### Languages used
-
----
 
 Python
